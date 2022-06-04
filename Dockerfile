@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-SHELL ["/bin/bash", "-c"]
+#SHELL ["/bin/bash", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV WILDFLY_USER wildfly
@@ -23,7 +23,7 @@ RUN cp /root/.profile /home/wildfly/.profile
 RUN cp /root/.bashrc /home/wildfly/.bashrc
 RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
 
-USER $WILDFLY_USER
+#USER $WILDFLY_USER
 
 WORKDIR /home/$WILDFLY_USER
 
@@ -57,7 +57,7 @@ COPY ./pom.xml /home/${WILDFLY_USER}/${WILDFLY_APP}/
 USER root
 RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
 RUN chmod -R g+rw /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}
-USER $WILDFLY_USER
+
 
 # Compile application war
 WORKDIR /home/$WILDFLY_USER/${WILDFLY_APP}
