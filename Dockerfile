@@ -7,7 +7,7 @@ ENV WILDFLY_USER wildfly
 ENV WILDFLY_USER_PASSWORD wildfly
 ENV USER_HOME = /home/$WILDFLY_USER
 ENV WILDFLY_VERSION 25.0.1.Final
-ENV WILDFLY_APP CurrencyConverter
+ENV WILDFLY_APP App
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
 
 # Update system and install dependencies
@@ -35,6 +35,15 @@ COPY standalone.conf /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/bin/standa
 COPY standalone.xml /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/standalone/configuration/standalone.xml
 RUN  /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/bin/add-user.sh -u 'admin' -p 'assd2022'
 
+
+# mysql connector installation
+WORKDIR /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/modules/system/layers/base/com/mysql/main
+
+ADD module.xml .
+RUN curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar
+
+WORKDIR /home/$WILDFLY_USER
+
 # maven installation
 RUN curl -L -O https://dlcdn.apache.org/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz \
      && tar xzvf apache-maven-3.8.5-bin.tar.gz \
@@ -47,6 +56,7 @@ COPY ./src /home/${WILDFLY_USER}/${WILDFLY_APP}/src
 COPY ./pom.xml /home/${WILDFLY_USER}/${WILDFLY_APP}/
 USER root
 RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
+RUN chmod -R g+rw /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}
 USER $WILDFLY_USER
 
 # Compile application war
