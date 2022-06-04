@@ -53,11 +53,11 @@ RUN echo 'export PATH=$PATH:/home/${WILDFLY_USER}' >> ~/.bashrc
 # Copy application source and configuration
 COPY ./src /home/${WILDFLY_USER}/${WILDFLY_APP}/src
 COPY ./pom.xml /home/${WILDFLY_USER}/${WILDFLY_APP}/
-USER root
+#USER root
 RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
 RUN chmod -R g+rw /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}
 
-
+USER $WILDFLY_USER
 # Compile application war
 WORKDIR /home/$WILDFLY_USER/${WILDFLY_APP}
 RUN mvn install
