@@ -7,21 +7,20 @@ ENV WILDFLY_USER wildfly
 ENV WILDFLY_USER_PASSWORD wildfly
 ENV USER_HOME = /home/$WILDFLY_USER
 ENV WILDFLY_VERSION 25.0.1.Final
-ENV WILDFLY_APP App
+ENV WILDFLY_APP Bank
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
 
 # Update system and install dependencies
 USER root
 RUN apt-get update
-RUN apt-get -y install openjdk-11-jdk-headless
-RUN apt-get -y install curl
+RUN apt-get -y install openjdk-11-jdk-headless curl
 
 # create application user
 RUN useradd -m $WILDFLY_USER -p $WILDFLY_USER_PASSWORD
 RUN usermod -aG sudo $WILDFLY_USER
-RUN cp /root/.profile /home/wildfly/.profile
-RUN cp /root/.bashrc /home/wildfly/.bashrc
-RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
+#RUN cp /root/.profile /home/wildfly/.profile
+#RUN cp /root/.bashrc /home/wildfly/.bashrc
+#RUN chown -R $WILDFLY_USER:$WILDFLY_USER /home/$WILDFLY_USER
 
 #USER $WILDFLY_USER
 
