@@ -64,6 +64,9 @@ RUN mvn install
 
 RUN cp /home/${WILDFLY_USER}/${WILDFLY_APP}/target/${WILDFLY_APP}.war /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/standalone/deployments
 
+RUN mkdir -p home/${WILDFLY_USER}/${WILDFLY_APP}/standalone/data
+RUN mkdir -p home/${WILDFLY_USER}/${WILDFLY_APP}/standalone/log
+RUN touch home/${WILDFLY_USER}/${WILDFLY_APP}/standalone/log/server.log
 
 # Expose the ports in which we're interested
 EXPOSE 8080 8443 9990
