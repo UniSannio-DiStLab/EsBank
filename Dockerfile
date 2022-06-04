@@ -31,7 +31,7 @@ RUN curl -L -O https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VER
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && rm wildfly-$WILDFLY_VERSION.tar.gz
 COPY standalone.conf /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/bin/standalone.conf
-COPY standalone.xml /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/standalone/configuration/standalone.xml
+COPY standalone_antonio.xml /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/standalone/configuration/standalone.xml
 RUN  /home/${WILDFLY_USER}/wildfly-${WILDFLY_VERSION}/bin/add-user.sh -u 'admin' -p 'assd2022'
 
 
