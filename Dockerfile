@@ -1,42 +1,39 @@
-FROM maven:3.8.5-jdk-11
+FROM maven:3.8.5-jdk-11 AS codeCompiler
 
 #SHELL ["/bin/bash", "-c"]
 
-ARG DEBIAN_FRONTEND=noninteractive
-ENV WILDFLY_VERSION 25.0.1.Final
+RUN mkdir -p /source
+WORKDIR /source
+ADD . /source/
+
+RUN mvn install
+
+FROM jboss/wildfly:19.0.0.Final
+
 ENV WILDFLY_APP Bank
 
-WORKDIR /opt
+USER root
+RUN mkdir -p /source
+WORKDIR /
+COPY --from=codeCompiler /source /source
 
-RUN curl -L -O https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
-    && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
-    && rm wildfly-$WILDFLY_VERSION.tar.gz
-RUN mv wildfly-${WILDFLY_VERSION} wildfly
-RUN /opt/wildfly/bin/add-user.sh -u 'admin' -p 'assd2022'
 
-RUN mkdir -p /opt/wildfly/modules/system/layers/base/com/mysql/main
-WORKDIR /opt/wildfly/modules/system/layers/base/com/mysql/main
-
+WORKDIR ${JBOSS_HOME}/modules/system/layers/base/com/mysql/main
 ADD module.xml .
 RUN curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar
 
-RUN mkdir -p /source
 
-WORKDIR /source
-
-COPY . /source/
-
-RUN cp standalone.conf /opt/wildfly/bin/standalone.conf
-RUN cp standalone.xml /opt/wildfly/standalone/configuration/standalone.xml
-
-RUN mvn clean install
+ADD standalone.xml ${JBOSS_HOME}/standalone/configuration/
+RUN cp /source/target/${WILDFLY_APP}.war ${JBOSS_HOME}/standalone/deployments
+RUN ${JBOSS_HOME}/bin/add-user.sh unisannio unisannio --silent
 
 
-RUN cp /source/target/${WILDFLY_APP}.war /opt/wildfly/standalone/deployments
-
+RUN chown -R jboss:0 ${JBOSS_HOME} && \
+    chmod -R g+rw ${JBOSS_HOME}
 
 EXPOSE 8080 8443 9990
 
-ENTRYPOINT /opt/wildfly/bin/standalone.sh
+USER jboss
+ENTRYPOINT ${JBOSS_HOME}/bin/standalone.sh
 
 #ENTRYPOINT sleep 100000
