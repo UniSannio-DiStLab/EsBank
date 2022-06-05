@@ -65,4 +65,14 @@ public class Customer implements Serializable {
 	public void setAccount(List<Account> accounts) {
 		this.accounts = accounts;
 	}
+
+	@Override
+	public String toString() {
+		return "Customer{" +
+				"CF='" + CF + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", accounts=" + accounts +
+				'}';
+	}
 }

@@ -69,4 +69,14 @@ public class Account implements Serializable {
 	public Date getLastModified() {
 		return lastModified;
 	}
+
+	@Override
+	public String toString() {
+		return "Account{" +
+				"number=" + number +
+				", balance=" + balance +
+				", lastModified=" + lastModified +
+				", customer=" + customer +
+				'}';
+	}
 }
